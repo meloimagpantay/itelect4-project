@@ -1,14 +1,29 @@
-// src/components/Layout.tsx -- NEW FILE
+// src/components/Layout.tsx
+// ===== SESSION 6: the top of this file, before today ===================
+// import { NavLink, Outlet } from "react-router";
+// import useToggle from "../hooks/useToggle";
+// import useAuthStore from "../store/authStore";  // we build this later today
+//
+// function Layout() {
+//   // Dark mode MOVES here, out of Session 5's App.tsx
+//   const [isDarkMode, toggleDarkMode] = useToggle(false);
+//   const userName = useAuthStore((state) => state.userName);
+//   const logout = useAuthStore((state) => state.logout);
+//
+// NOTE: Only those lines changed. Everything below -- linkClass, the
+//       nav bar, the Outlet -- is byte for byte last week's file.
+// ===== SESSION 7: dark mode now comes from the store ===================
 import { NavLink, Outlet } from "react-router";
-import useToggle from "../hooks/useToggle";
-import useAuthStore from "../store/authStore";  // we build this later today
- 
+import useAuthStore from "../store/authStore";
+import useUiStore from "../store/uiStore";
+
 function Layout() {
-  // Dark mode MOVES here, out of Session 5's App.tsx
-  const [isDarkMode, toggleDarkMode] = useToggle(false);
+  const isDarkMode = useUiStore((state) => state.isDarkMode);
+  const toggleDarkMode = useUiStore((state) => state.toggleDarkMode);
+
   const userName = useAuthStore((state) => state.userName);
   const logout = useAuthStore((state) => state.logout);
- 
+
   // The classes every nav link shares, then the two variants
   const base = "rounded px-3 py-1.5 text-sm";
   const activeLink = `${base} bg-blue-600 font-semibold text-white`;
@@ -35,7 +50,12 @@ function Layout() {
             Submissions
           </NavLink>
           {userName === null ? (
-            <NavLink to="/login" className={linkClass}>Login</NavLink>
+            <>
+              <NavLink to="/login" className={linkClass}>Login</NavLink>
+              <NavLink to="/register" className={linkClass}>
+                Register
+              </NavLink>
+            </>
           ) : (
             <button onClick={logout}
               className="rounded px-3 py-1.5 text-sm text-gray-700

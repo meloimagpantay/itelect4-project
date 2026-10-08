@@ -22,3 +22,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Your own API host. .env.example is the one that is committed.
+.env

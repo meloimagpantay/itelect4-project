@@ -6,6 +6,7 @@ import DashboardPage from "./pages/DashboardPage";
 import CoursesPage from "./pages/CoursesPage";
 import CourseDetailPage from "./pages/CourseDetailPage";
 import LoginPage from "./pages/LoginPage";
+import RegisterPage from "./pages/RegisterPage";        // <-- NEW
 import SubmissionsPage from "./pages/SubmissionsPage";
 import NotFoundPage from "./pages/NotFoundPage";
  
@@ -17,6 +18,8 @@ function App() {
         <Route path="courses" element={<CoursesPage />} />
         <Route path="courses/:code" element={<CourseDetailPage />} />
         <Route path="login" element={<LoginPage />} />
+        {/* Public, like login: you cannot be logged in yet. */}
+        <Route path="register" element={<RegisterPage />} />
         <Route element={<ProtectedRoute />}>          {/* <-- the guard */}
           <Route path="submissions" element={<SubmissionsPage />} />
         </Route>

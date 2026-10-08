@@ -95,3 +95,57 @@ export const enum Role {
   Admin      = "admin",
   Instructor = "instructor",
 }
+
+// ===== SESSION 7: two types added below this line ======================
+//
+// NOTE: Everything above is Sessions 1-2, untouched. Submission is
+//       still the single source of truth -- the two types below are
+//       DERIVED from it with Omit.
+// JSON has no Date, and json-server writes ids as strings. So what the
+// API hands back is NOT the Submission shape you declared in Session 1.
+// Both types below are DERIVED from it, so Submission stays the single
+// source of truth -- add a field there and these two inherit it.
+ 
+// Omit is from Session 2. The & intersection is from Session 1.
+// ===== SESSIONS 7-8: two derived types, written for json-server ======
+// export type ApiSubmission = Omit<Submission, "id" | "submittedAt"> & {
+//   id:          string;   // json-server ids look like "z4U3v8og06g"
+//   submittedAt: string;   // an ISO string, never a Date object
+// };
+//
+// // What we SEND when creating one. No id yet -- the server makes it.
+// export type NewSubmission = Omit<ApiSubmission, "id">;
+//
+// NOTE: studentId was still a number, because json-server stored
+//       whatever it was handed. MongoDB stores an ObjectId and sends
+//       back 24 hex characters, so that field moves into the Omit too.
+// ===== SESSION 10: the same two types, matching the real API =========
+export type ApiSubmission = Omit<
+  Submission,
+  "id" | "studentId" | "submittedAt"
+> & {
+  id:          string;   // 24 hex characters, from MongoDB's _id
+  studentId:   string;   // the owner's _id, also 24 hex characters
+  submittedAt: string;   // an ISO string, never a Date object
+};
+ 
+// What we SEND when creating one. Not Omit<ApiSubmission, "id"> any
+// more: the server fills in studentId from the token and submittedAt
+// from the schema default, so sending either one is at best ignored
+// and at worst a lie. These two fields are the whole request body,
+// and itelect4-backend's NewSubmissionBody is this same Pick.
+export type NewSubmission = Pick<Submission, "courseCode" | "repoUrl">;
+ 
+// What /api/auth/register sends back, and what sits inside the login
+// reply. Same story as ApiSubmission: Session 1 said id was a number
+// because there was no database to number the rows.
+export type ApiUser = Omit<User, "id"> & {
+  id: string;
+};
+ 
+// What /api/auth/login sends back. The token is the string that goes
+// in the Authorization header on every request after this one.
+export interface AuthReply {
+  token: string;
+  user:  ApiUser;
+}

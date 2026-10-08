@@ -1,8 +1,20 @@
 // src/components/SubmissionBadge.tsx
-import type { Submission } from "../types/index";
+// ===== SESSION 6: the import and the prop type =========================
+// import type { Submission } from "../types/index";
+//
+// interface SubmissionBadgeProps {
+//   submission: Submission;
+//   children?: React.ReactNode;
+// }
+//
+// NOTE: The component body below is untouched. It only ever reads
+//       submission.repoUrl and submission.score, and both survived
+//       the Omit -- so nothing inside it had to change.
+// ===== SESSION 7: the prop takes the API's shape now ===================
+import type { ApiSubmission } from "../types/index";
 
 interface SubmissionBadgeProps {
-  submission: Submission;
+  submission: ApiSubmission;
   children?: React.ReactNode;
 }
 
