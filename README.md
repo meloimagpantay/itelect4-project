@@ -1,10 +1,65 @@
-# itelect4-project — end of Session 11 (annotated for teaching)
+# itelect4-project
 
-The Sessions 1–8 frontend, rewired in Session 10 to call the real
-`itelect4-backend` API, with an AI Review page added in Session 11. **Annotated so the session can be taught by
-reading this project instead of typing it live.**
+[![CI](https://github.com/meloimagpantay/itelect4-project/actions/workflows/ci.yml/badge.svg)](https://github.com/meloimagpantay/itelect4-project/actions/workflows/ci.yml)
 
-`.git` removed so demo edits can't reach the real repo.
+The ITELECT4 class demo, end of Session 12: a Course Submission Tracker
+in React and TypeScript. It lists courses, logs a student in against
+`itelect4-backend`, records their submissions, and asks Gemini for a
+review of a project description. Annotated so each session can be
+taught by reading the code instead of typing it live.
+
+- **Live app:** https://itelect4-project-xxxx.vercel.app
+- **API it calls:** https://itelect4-backend-xxxx.vercel.app
+- **Backend repo:** https://github.com/meloimagpantay/itelect4-backend
+
+## Architecture
+
+```mermaid
+flowchart LR
+  user(["Student's browser"])
+  fe["itelect4-project<br/>React + Vite on Vercel"]
+  be["itelect4-backend<br/>Express on Vercel"]
+  db[("MongoDB Atlas")]
+  ai["Gemini API"]
+  user -- "loads the page" --> fe
+  fe -- "fetch + Bearer token" --> be
+  be -- "Mongoose" --> db
+  be -- "GEMINI_API_KEY" --> ai
+```
+
+The browser only ever talks to the two Vercel addresses. The database
+and Gemini are reached by the backend alone, so neither the Atlas
+password nor the Gemini key is ever sent to the browser.
+
+## Tests and CI
+
+```
+npm test             # Vitest, once: 3 files, 6 tests
+npm run test:watch   # Vitest, re-running on every save
+```
+
+| File | What it checks |
+|---|---|
+| `src/components/SubmissionBadge.test.tsx` | Renders the score, and "Not graded yet" when there is none |
+| `src/hooks/useToggle.test.ts` | The value starts where it was told to and flips on each toggle |
+| `src/pages/LoginPage.test.tsx` | An empty or invalid form shows the schema's messages and sends no request |
+
+`.github/workflows/ci.yml` runs `npm ci`, `npm run lint`, `npm test` and
+`npm run build` on GitHub's machine on every push. The badge above is
+green when the latest run on `main` passed. No secrets are needed: the
+tests set their own `VITE_API_URL` in `vite.config.ts` and never call
+the API.
+
+## What Session 12 changed
+
+| File | What changed |
+|---|---|
+| `package.json` | `vitest`, `jsdom` and three `@testing-library` packages in devDependencies; `test` and `test:watch` scripts. |
+| `vite.config.ts` | `defineConfig` comes from `vitest/config`, and a `test` block: the jsdom environment, the setup file, and a fixed `VITE_API_URL` for tests. |
+| `src/test/setup.ts` | **New.** jest-dom's matchers, and `cleanup()` after every test. |
+| `src/**/*.test.ts(x)` | **New.** The three test files above, each beside the file it tests. |
+| `.github/workflows/ci.yml` | **New.** The CI workflow. |
+| `README.md` | The badge, the architecture diagram and this section. |
 
 ## Run it — TWO terminals, and neither is json-server any more
 
