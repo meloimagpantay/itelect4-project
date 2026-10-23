@@ -1,7 +1,7 @@
-# itelect4-project — end of Session 10 (annotated for teaching)
+# itelect4-project — end of Session 11 (annotated for teaching)
 
 The Sessions 1–8 frontend, rewired in Session 10 to call the real
-`itelect4-backend` API. **Annotated so the session can be taught by
+`itelect4-backend` API, with an AI Review page added in Session 11. **Annotated so the session can be taught by
 reading this project instead of typing it live.**
 
 `.git` removed so demo edits can't reach the real repo.
@@ -34,6 +34,20 @@ every call going to `undefined/api/courses`.
 
 The backend has to allow this origin. `CORS_ORIGIN` in its `.env`
 should contain `http://localhost:5173`.
+
+## What Session 11 changed
+
+| File | What changed |
+|---|---|
+| `src/pages/ReviewPage.tsx` | **New.** A description box, React Hook Form, and a `useMutation` that calls `POST /api/ai`. The review renders as a coloured readiness badge, a summary and two lists. No `mode: "onBlur"` — see the comment in the file. |
+| `src/schemas/reviewSchema.ts` | **New.** The same 20–2000 character rule, with the same messages, as the API's request schema. |
+| `src/api/client.ts` | `askAi(prompt)`. Private: `request()` attaches the token. |
+| `src/types/index.ts` | `AiReview` — the shape the API sends back, written to match its Zod schema. |
+| `src/App.tsx` | A `/review` route inside `ProtectedRoute`. |
+| `src/components/Layout.tsx` | An AI Review link. |
+
+The Gemini key is **not** in this repo and never will be: the browser
+calls `itelect4-backend`, and only the backend calls Gemini.
 
 ## What Session 10 changed
 
