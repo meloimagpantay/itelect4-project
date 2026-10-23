@@ -22,6 +22,7 @@
 //       And every message above was invented here -- the real API says
 //       "Email or password is incorrect", and nobody ever reads it.
 // ===== SESSION 10: one request() helper, and a host from the env ======
+//
 import type {
   Course,
   ApiSubmission,
@@ -50,10 +51,7 @@ if (!API_URL) {
 
 // Every call goes through here: the host, the JSON header, the token
 // when there is one, and the API's own message when it refuses.
-async function request<T>(
-  path: string,
-  init: RequestInit = {},
-): Promise<T> {
+async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
   // getState(), not the useAuthStore hook -- this is not a component,
   // and it does not need to re-render when the token changes. It only
   // needs whatever the token is at the moment of the call.
